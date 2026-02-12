@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bank App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 10px 0;
+    }
+
+    button {
+      padding: 10px;
+      width: 48%;
+      margin-top: 10px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .credit {
+      background-color: green;
+    }
+
+    .debit {
+      background-color: red;
+    }
+
+    .balance {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .history {
+      margin-top: 15px;
+      max-height: 120px;
+      overflow-y: auto;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+      font-size: 14px;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Bank App</h2>
+
+  <label>Name</label>
+  <input type="text" id="name">
+
+  <label>Transaction Amount</label>
+  <input type="number" id="amount">
+
+  <label>Purpose / Source</label>
+  <input type="text" id="purpose">
+
+  <button class="credit" onclick="creditAmount()">Credit</button>
+  <button class="debit" onclick="debitAmount()">Debit</button>
+
+  <div class="balance">
+    Balance: Rs.<span id="balance">0</span>
+  </div>
+
+  <p class="error" id="message"></p>
+
+  <div class="history" id="history">
+    <strong>Transaction History:</strong>
+  </div>
+</div>
+
+<script>
+  let balance = 0;
+
+  function creditAmount() {
+    let name = document.getElementById("name").value;
+    let amount = parseFloat(document.getElementById("amount").value);
+    let purpose = document.getElementById("purpose").value;
+    let message = document.getElementById("message");
+
+    if (!name || !amount || amount <= 0) {
+      message.textContent = "Please enter valid details!";
+      return;
+    }
+
+    balance += amount;
+    document.getElementById("balance").textContent = balance;
+    message.textContent = "";
+
+    addHistory("Credited", amount, purpose);
+
+    clearFields();
+  }
+
+  function debitAmount() {
+    let name = document.getElementById("name").value;
+    let amount = parseFloat(document.getElementById("amount").value);
+    let purpose = document.getElementById("purpose").value;
+    let message = document.getElementById("message");
+
+    if (!name || !amount || amount <= 0) {
+      message.textContent = "Please enter valid details!";
+      return;
+    }
+
+    if (amount > balance) {
+      message.textContent = "Insufficient balance!";
+      return;
+    }
+
+    balance -= amount;
+    document.getElementById("balance").textContent = balance;
+    message.textContent = "";
+
+    addHistory("Debited", amount, purpose);
+
+    clearFields();
+  }
+
+  function addHistory(type, amount, purpose) {
+    let historyDiv = document.getElementById("history");
+    let newEntry = document.createElement("p");
+    newEntry.textContent = `${type}: Rs.${amount} (${purpose})`;
+    historyDiv.appendChild(newEntry);
+  }
+
+  function clearFields() {
+    document.getElementById("amount").value = "";
+    document.getElementById("purpose").value = "";
+  }
+</script>
+
+</body>
+</html>
